@@ -1,0 +1,43 @@
+# Xenon 1.0.0 - conservative performance controls.
+# Mob caps are per world and count currently loaded mobs, not all saved entities in the world.
+
+monitoring:
+  sample-interval-ticks: 1200
+  log-summary: false
+  heap-warning-percent: 90
+  tick-warning-ms: 75.0
+
+pregen:
+  enabled: true
+  max-radius: 16
+  request-interval-ticks: 2
+  pause-average-tick-ms: 60.0
+  pause-heap-percent: 92
+  startup:
+    enabled: true
+    delay-ticks: 100
+    # Radius is measured in chunks around the spawn chunk. Radius 8 = 289 chunks.
+    radius-chunks: 8
+    # Empty means first loaded world only. Set explicit world names to choose worlds.
+    worlds: []
+
+entity-cleanup:
+  enabled: true
+  # Time since last detected in any player's view cone with unobstructed line of sight.
+  unseen-minutes: 5
+  interval-ticks: 600
+  # False is recommended: naturally spawned hostile mobs only. Set true to include passive mobs.
+  include-passive-mobs: false
+  # Bounds how many eligible mobs receive view/line-of-sight checks per scan.
+  max-entity-checks-per-run: 2500
+  view-cone-degrees: 110.0
+
+mob-spawn:
+  enabled: true
+  # Per-world limits among loaded entities. 0 disables that category's Xenon cap.
+  limits:
+    hostile: 70
+    passive: 10
+    water: 15
+  # Leave false to preserve spawner farms and player-triggered spawner gameplay.
+  limit-spawners: false
