@@ -1,6 +1,6 @@
 # Xenon 1.0.0
 
-A conservative Paper server optimization plugin focused on loaded-entity cleanup, mob spawn limits, spawn-area chunk pregeneration, and performance monitoring.
+A conservative Paper server optimization plugin focused on loaded entity cleanup, mob spawn limits, spawn area chunk pregeneration, and performance monitoring.
 
 ## Target
 
@@ -13,17 +13,17 @@ A conservative Paper server optimization plugin focused on loaded-entity cleanup
 
 ### 1. Entity visibility cleanup
 
-Every configured interval, Xenon checks a bounded number of loaded mobs. It approximates visibility using a player's camera view cone plus Bukkit's line-of-sight check. If an eligible mob has not been detected by any player's view for five minutes, it is removed.
+Every configured interval, Xenon checks a bounded number of loaded mobs. It approximates visibility using a player's camera view cone plus Bukkit's line of sight check. If an eligible mob has not been detected by any player's view for five minutes, it is removed.
 
 By default, this targets hostile monsters only. Passive mobs are protected unless `entity-cleanup.include-passive-mobs` is enabled. Xenon also protects mobs configured not to despawn naturally, named mobs, tamed mobs, leashed mobs, mobs with passengers or vehicles, and mobs currently targeting something. Villagers and players are not targeted.
 
-**Important limitation:** Bukkit/Paper does not expose a perfect, cheap test for whether a mob is literally visible on the rendered screen. The plugin's view-cone and line-of-sight check is an approximation. To limit overhead, scans are periodic and capped by `max-entity-checks-per-run`. Very large entity populations may take multiple scans to be evaluated.
+**Important limitation:** Bukkit/Paper does not expose a perfect, cheap test for whether a mob is literally visible on the rendered screen. The plugin's view cone and line of sight check is an approximation. To limit overhead, scans are periodic and capped by `max-entity-checks-per-run`. Very large entity populations may take multiple scans to be evaluated.
 
 ### 2. Automatic spawn-area pregeneration
 
 When enabled, Xenon waits the configured startup delay and starts one controlled pregeneration job around the spawn of the first eligible loaded world. Radius 8 means a square of 17 x 17 = 289 chunks. The job requests one chunk at a time and pauses when observed tick intervals or heap usage exceed configured thresholds.
 
-`pregen.startup.worlds: []` means the first loaded world. To target specific worlds, list their exact names. Xenon starts only one startup job; use `/xenon pregen` to manually pre-generate other worlds.
+`pregen.startup.worlds: []` means the first loaded world. To target specific worlds, list their exact names. Xenon starts only one startup job; use `/xenon pregen` to manually pregenerate other worlds.
 
 ### 3. Mob spawn limits
 
@@ -58,12 +58,3 @@ gradle clean build
 ```
 
 The plugin JAR will be generated under `build/libs/`.
-
-## Safety notes
-
-- Back up the world before first use.
-- Test on a staging server before production.
-- Startup pregeneration consumes CPU and disk I/O; configure a small radius first.
-- Entity cleanup removes eligible mobs after its timer. It does not remove player-owned or persistent entities under the default rules.
-- This plugin cannot directly improve a player's GPU, increase physical CPU performance, or add RAM. It can reduce server-side workload.
-- The source has not been compiled or runtime-tested in the current environment. The available environment uses Java 21 and has no Gradle installation; build and test with Java 25 before deployment.
